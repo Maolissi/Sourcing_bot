@@ -1,0 +1,22 @@
+from functools import lru_cache
+
+from pydantic import SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    bot_token: SecretStr
+    app_env: str = "development"
+    log_level: str = "INFO"
+    timezone: str = "Europe/Sofia"
+    database_url: str = "postgresql+asyncpg://sourcer:sourcer_dev_password@localhost:5432/sourcer_db"
+    redis_url: str = "redis://localhost:6379/0"
+    openai_api_key: SecretStr | None = None
+    openai_model: str = "gpt-6"
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
